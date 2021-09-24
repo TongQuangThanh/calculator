@@ -1,6 +1,6 @@
 {
-	"appId": "io.ionic.starter",
-	"appName": "ac",
+	"appId": "com.thnvn.calculator",
+	"appName": "calculator",
 	"webDir": "www",
 	"bundledWebRuntime": false
 }

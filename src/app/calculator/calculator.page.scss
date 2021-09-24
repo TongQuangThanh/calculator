@@ -1,0 +1,16 @@
+.ios ion-card {
+  height: calc(100vh - 44px);
+}
+
+.md ion-card {
+  height: calc(100vh - 56px);
+}
+
+.big-size {
+  font-size: 2em;
+}
+
+ion-col {
+  border-top: 1px solid var(--ion-color-primary);
+  border-right: 1px solid var(--ion-color-primary);
+}

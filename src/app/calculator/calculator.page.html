@@ -1,0 +1,53 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{ page }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card class="ion-no-margin ion-justify-content-between" style="display: flex; flex-direction: column;">
+    <ion-card-header [class]="clientHeight && clientHeight > 640 ? '' : 'ion-no-padding'">
+      <ion-card-title [class]="clientHeight && clientHeight > 640 ? '' : 'ion-margin-horizontal'">
+        <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size' : ''">
+          <ion-input type="text" [(ngModel)]="input" autofocus="true" disabled="true"></ion-input>
+        </h1>
+        <ion-text color="primary">
+          <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size ion-text-right' : 'ion-text-right'">
+            {{ result | number:'1.0-9999' }}
+          </h1>
+        </ion-text>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <!-- <ion-row>
+        <ion-col size="2" *ngFor="let item of operators" (click)="clickOperators(item)"
+          class="ion-no-padding ion-no-border cell">
+          <ion-button [disabled]='input.length === 0' expand="full" fill="clear" style="height: 100%;">
+            <ion-label>
+              <strong>{{ item.isExponent ? 'x' : item.icon }}<sup *ngIf="item.isExponent">{{ item.icon }}</sup></strong>
+            </ion-label>
+          </ion-button>
+        </ion-col>
+      </ion-row> -->
+      <ion-row>
+        <ion-col size="3" *ngFor="let item of buttons; index as i" class="ion-no-padding ion-no-border cell"
+          (click)="clickButtons(item)">
+          <ion-button expand="full" [fill]="i % 4 === 3 ? 'solid' : 'clear'" class="ion-no-margin"
+            [color]="item.value === '+/-' && !isPositive ? 'medium' : ''" style="height: 100%">
+            <ion-label *ngIf="item.value !== 'backspace'; else backspace">
+              <h1><strong>{{ item.value }}</strong></h1>
+            </ion-label>
+            <ng-template #backspace>
+              <ion-button fill="clear">
+                <ion-icon slot="icon-only" [name]="item.value"></ion-icon>
+              </ion-button>
+            </ng-template>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

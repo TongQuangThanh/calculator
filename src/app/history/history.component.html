@@ -1,0 +1,26 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>History</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" *ngIf="history.length !== 0;else noHistory">
+  <ion-card *ngFor="let item of history">
+    <ion-card-header class="ion-text-right">
+      <ion-card-subtitle style="font-size: 16px;">{{item.input}}</ion-card-subtitle>
+      <ion-card-title>{{item.result}}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+</ion-content>
+<ng-template #noHistory>
+  <ion-grid fixed style="height: 100%;">
+    <ion-row style="height: 100%;" class="ion-align-items-center">
+      <ion-col size="12" class="ion-text-center">
+        Hiện tại chưa có lịch sử nào!
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ng-template>
