@@ -3,10 +3,13 @@
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
         <ion-list id="inbox-list">
-          <ion-list-header>Máy tính tay</ion-list-header>
-          <ion-note class="ion-margin-vertical" (click)="clickName()" *ngIf="name; else noName">
-            Chào {{ name }}, ngày mới tốt lành nhé :)
+          <ion-list-header [class]="isShe ? '' : 'ion-margin-vertical'">Máy tính tay</ion-list-header>
+          <ion-note class="ion-margin-vertical" *ngIf="isShe" (click)="clickName()" style="display: flex; align-items: center;">
+              Chúc gấu yêu ngày mới tốt lành nhé <ion-icon name="heart" color="danger"></ion-icon>
           </ion-note>
+          <!-- <ion-note class="ion-margin-vertical" (click)="clickName()" *ngIf="name; else noName">
+            Chào {{ name }}, ngày mới tốt lành nhé :)
+          </ion-note> -->
           <ng-template #noName>
             <ion-item>
               <ion-label (click)="clickName()">Xin chào, bạn tên là gì?</ion-label>

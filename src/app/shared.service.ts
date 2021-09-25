@@ -18,7 +18,7 @@ export class SharedService {
     this.exit.next();
   }
   saveHistory(input: string, result: string) {
-    this.history.push({input, result});
+    this.history.push({ input, result });
   }
 
   async init() {

@@ -6,7 +6,7 @@ import { IonicModule } from '@ionic/angular';
 
 import { CalculatorPageRoutingModule } from './calculator-routing.module';
 
-import { CalculatorPage } from './calculator.page';
+import { CalculatorPage, ModalComponent } from './calculator.page';
 
 @NgModule({
   imports: [
@@ -16,6 +16,6 @@ import { CalculatorPage } from './calculator.page';
     CalculatorPageRoutingModule,
     ReactiveFormsModule
   ],
-  declarations: [CalculatorPage]
+  declarations: [CalculatorPage, ModalComponent]
 })
 export class CalculatorPageModule {}

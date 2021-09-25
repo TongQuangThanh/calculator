@@ -22,23 +22,14 @@
       </ion-card-title>
     </ion-card-header>
     <ion-card-content class="ion-no-padding">
-      <!-- <ion-row>
-        <ion-col size="2" *ngFor="let item of operators" (click)="clickOperators(item)"
-          class="ion-no-padding ion-no-border cell">
-          <ion-button [disabled]='input.length === 0' expand="full" fill="clear" style="height: 100%;">
-            <ion-label>
-              <strong>{{ item.isExponent ? 'x' : item.icon }}<sup *ngIf="item.isExponent">{{ item.icon }}</sup></strong>
-            </ion-label>
-          </ion-button>
-        </ion-col>
-      </ion-row> -->
       <ion-row>
-        <ion-col size="3" *ngFor="let item of buttons; index as i" class="ion-no-padding ion-no-border cell"
-          (click)="clickButtons(item)">
-          <ion-button expand="full" [fill]="i % 4 === 3 ? 'solid' : 'clear'" class="ion-no-margin"
-            [color]="item.value === '+/-' && !isPositive ? 'medium' : ''" style="height: 100%">
+        <ion-col [size]="12 / numberOfBtnOnRow" *ngFor="let item of buttons; index as i"
+          class="ion-no-padding ion-no-border cell" (click)="clickButtons(item)">
+          <ion-button expand="full" [fill]="i % 4 === 3 ? 'solid' : ''" class="ion-no-margin"
+            [color]="item.value === '+/-' && !isPositive ? 'light' : i % 4 === 3 ? 'medium' : ''" style="height: 100%">
             <ion-label *ngIf="item.value !== 'backspace'; else backspace">
-              <h1><strong>{{ item.value }}</strong></h1>
+              <h1 *ngIf="item.value !== 'x';else x"><strong>{{ item.value }}</strong></h1>
+              <ng-template #x><strong>x</strong></ng-template>
             </ion-label>
             <ng-template #backspace>
               <ion-button fill="clear">

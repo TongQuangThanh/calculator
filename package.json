@@ -25,8 +25,13 @@
     "@capacitor/haptics": "1.0.3",
     "@capacitor/keyboard": "1.0.3",
     "@capacitor/status-bar": "1.0.3",
+    "@ionic-native/core": "^5.36.0",
+    "@ionic-native/device": "^5.36.0",
+    "@ionic-native/device-accounts": "^5.36.0",
     "@ionic/angular": "^5.5.2",
     "@ionic/storage-angular": "^3.0.6",
+    "cordova-device-accounts-v2": "^2.0.8",
+    "cordova-plugin-device": "^2.0.3",
     "rxjs": "~6.6.0",
     "tslib": "^2.2.0",
     "zone.js": "~0.11.4"
