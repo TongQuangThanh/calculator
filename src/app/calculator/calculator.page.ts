@@ -257,7 +257,7 @@ export class CalculatorPage implements OnInit, AfterViewChecked {
                           isShe: false
                         }
                       });
-                      await modal.present();
+                      // await modal.present();
                     }
                   }
                 ]
