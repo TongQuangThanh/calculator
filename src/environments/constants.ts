@@ -5,4 +5,8 @@ export const appPages = [
   { title: 'Lịch sử', url: '/history', icon: 'alarm' },
 ];
 
-export const labels = [{ title: 'Thoát', icon: 'exit' }];
+export const labels = [
+  { title: 'Chính sách quyền riêng tư', icon: 'help-circle' },
+  { title: 'Về ứng dụng', icon: 'information-circle' },
+  { title: 'Thoát', icon: 'exit' }
+];

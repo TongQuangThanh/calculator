@@ -1,3 +1,5 @@
+import { PrivacyComponent } from './privacy/privacy.component';
+import { AboutComponent } from './about/about.component';
 import { DeviceAccounts } from '@ionic-native/device-accounts/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { IonicStorageModule } from '@ionic/storage-angular';
@@ -11,7 +13,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { HistoryComponent } from './history/history.component';
 
 @NgModule({
-  declarations: [AppComponent, HistoryComponent],
+  declarations: [AppComponent, HistoryComponent, AboutComponent, PrivacyComponent],
   entryComponents: [],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, IonicStorageModule.forRoot()],
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Device, DeviceAccounts],

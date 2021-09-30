@@ -4,16 +4,17 @@
       <ion-content>
         <ion-list id="inbox-list">
           <ion-list-header [class]="isShe ? '' : 'ion-margin-vertical'">Máy tính tay</ion-list-header>
-          <ion-note class="ion-margin-vertical" *ngIf="isShe" (click)="clickName()" style="display: flex; align-items: center;">
-              Chúc gấu yêu ngày mới tốt lành nhé <ion-icon name="heart" color="danger"></ion-icon>
+          <ion-note class="ion-margin-vertical" *ngIf="isShe; else noName" (click)="clickName()"
+            style="display: flex; align-items: center;">
+            Chúc gấu yêu ngày mới tốt lành nhé <ion-icon name="heart" color="danger"></ion-icon>
           </ion-note>
           <!-- <ion-note class="ion-margin-vertical" (click)="clickName()" *ngIf="name; else noName">
             Chào {{ name }}, ngày mới tốt lành nhé :)
           </ion-note> -->
           <ng-template #noName>
-            <ion-item>
-              <ion-label (click)="clickName()">Xin chào, bạn tên là gì?</ion-label>
-            </ion-item>
+            <ion-note>Chào {{ name }}, chúc bạn 1 ngày tốt lành <ion-icon name="happy" color="warning"></ion-icon>
+            </ion-note>
+            <!-- <ion-label (click)="clickName()">Xin chào, bạn tên là gì?</ion-label> -->
           </ng-template>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
             <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
@@ -25,7 +26,7 @@
         </ion-list>
 
         <ion-list id="labels-list">
-          <ion-item *ngFor="let label of labels" lines="none" (click)="clickLabel(label.icon)">
+          <ion-item *ngFor="let label of labels" lines="none" (click)="clickLabel(label.icon)" button>
             <ion-icon slot="start" ios="{{label.icon}}-outline" md="{{label.icon}}-sharp"></ion-icon>
             <ion-label>{{ label.title }}</ion-label>
           </ion-item>

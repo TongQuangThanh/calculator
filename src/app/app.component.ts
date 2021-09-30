@@ -4,6 +4,7 @@ import { Component } from '@angular/core';
 import { appPages, labels } from 'src/environments/constants';
 import { DeviceAccounts } from '@ionic-native/device-accounts/ngx';
 import { Device } from '@ionic-native/device/ngx';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -16,7 +17,7 @@ export class AppComponent {
   name: string;
   isShe = false;
   constructor(private sharedService: SharedService, private alertController: AlertController,
-    private device: Device, private deviceAccounts: DeviceAccounts) {
+    private device: Device, private deviceAccounts: DeviceAccounts, private router: Router) {
     this.deviceAccounts.get()
       .then(accounts => {
         for (const acc of accounts) {
@@ -26,16 +27,25 @@ export class AppComponent {
           }
           break;
         }
+        if (!this.isShe && !this.name) {
+          if (accounts.length > 0) {
+            this.name = accounts[0].name;
+          } else {
+            this.name = 'bạn';
+          }
+        }
       })
-      .catch();
-    this.sharedService.get('name').then(name => {
-      this.name = name;
-    });
+      .catch(() => { this.name = 'bạn'; });
+    this.sharedService.get('name').then(name => name ? this.name = name : '');
   }
 
   clickLabel(icon: string) {
     if (icon === 'exit') {
       this.sharedService.exitApp();
+    } else if (icon === 'information-circle') {
+      this.router.navigateByUrl('about');
+    } else if (icon === 'help-circle') {
+      this.router.navigateByUrl('privacy');
     }
   }
 
