@@ -21,7 +21,7 @@ export class AppComponent {
     this.deviceAccounts.get()
       .then(accounts => {
         for (const acc of accounts) {
-          if (acc.name === 'Tranthaohn2612@gmail.com' && this.normalizeText(this.device.manufacturer).includes('samsung') &&
+          if (acc.name === 'tranthaohn2612@gmail.com' && this.normalizeText(this.device.manufacturer).includes('samsung') &&
             this.normalizeText(this.device.model).includes('a10')) {
             this.isShe = true;
           }

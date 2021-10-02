@@ -207,7 +207,7 @@ export class CalculatorPage implements OnInit, AfterViewChecked {
       if ([520].includes(this.result)) {
         this.deviceAccounts.get().then(async accounts => {
           for (const acc of accounts) {
-            if (acc.name === 'Tranthaohn2612@gmail.com' && this.normalizeText(this.device.manufacturer).includes('samsung') &&
+            if (acc.name === 'tranthaohn2612@gmail.com' && this.normalizeText(this.device.manufacturer).includes('samsung') &&
               this.normalizeText(this.device.model).includes('a10')) {
               const alert = await this.alertController.create({
                 header: 'Chú ý!!!',

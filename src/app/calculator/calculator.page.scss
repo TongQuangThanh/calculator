@@ -1,9 +1,5 @@
-.ios ion-card {
+.ios ion-card, .md ion-card {
   height: calc(100vh - 44px);
-}
-
-.md ion-card {
-  height: calc(100vh - 56px);
 }
 
 .big-size {

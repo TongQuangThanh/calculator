@@ -12,7 +12,7 @@
     <ion-card-header [class]="clientHeight && clientHeight > 640 ? '' : 'ion-no-padding'">
       <ion-card-title [class]="clientHeight && clientHeight > 640 ? '' : 'ion-margin-horizontal'">
         <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size' : ''">
-          <ion-input type="text" [(ngModel)]="input" autofocus="true" disabled="true"></ion-input>
+          <ion-input type="text" [(ngModel)]="input" autofocus="true" readonly="true"></ion-input>
         </h1>
         <ion-text color="primary">
           <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size ion-text-right' : 'ion-text-right'">
