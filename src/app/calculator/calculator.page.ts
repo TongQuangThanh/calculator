@@ -1,27 +1,24 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
-import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { App } from '@capacitor/app';
 import { DeviceAccounts } from '@ionic-native/device-accounts/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { AlertController, IonRouterOutlet, ModalController, Platform, ToastController } from '@ionic/angular';
-import { appPages } from 'src/environments/constants';
+import { calculators } from 'src/environments/constants';
 import { SharedService } from './../shared.service';
 @Component({
   selector: 'app-calculator',
   templateUrl: './calculator.page.html',
   styleUrls: ['./calculator.page.scss'],
 })
-export class CalculatorPage implements OnInit, AfterViewChecked {
+export class CalculatorPage implements OnInit {
   page: string;
   clientHeight: number;
   input = '';
   result = 0;
   numberOfBtnOnRow = 4;
   isPositive = true;
-  accounts = '';
-  emails: any[];
-  permissions: string;
   operators = [
     { title: 'Cộng', icon: '+', isExponent: false },
     { title: 'Trừ', icon: '-', isExponent: false },
@@ -66,27 +63,11 @@ export class CalculatorPage implements OnInit, AfterViewChecked {
   }
 
   ngOnInit() {
-    for (const page of appPages) {
+    for (const page of calculators) {
       if (page.url.includes(this.activatedRoute.snapshot.paramMap.get('id'))) {
         this.page = page.title;
         return;
       }
-    }
-  }
-
-  ngAfterViewChecked() {
-    let height = document.body.clientWidth / this.numberOfBtnOnRow;
-    const cardHeight = document.getElementsByTagName('ion-card')[0].clientHeight;
-    const headerHeight = document.getElementsByTagName('ion-card-header')[0].clientHeight;
-    const numOfBtnOnCol = this.buttons.length / this.numberOfBtnOnRow;
-    if ((cardHeight - headerHeight) / numOfBtnOnCol < height) {
-      height = (cardHeight - headerHeight) / numOfBtnOnCol;
-    }
-    const cells = document.getElementsByClassName('cell');
-    // eslint-disable-next-line @typescript-eslint/prefer-for-of
-    for (let i = 0; i < cells.length; i++) {
-      const element = cells[i] as HTMLElement;
-      element.style.height = height + 'px';
     }
   }
 
@@ -201,8 +182,12 @@ export class CalculatorPage implements OnInit, AfterViewChecked {
       });
       await toast.present();
     } else if (input.length !== 0) {
-      // eslint-disable-next-line no-eval
-      this.result = eval(input);
+      if (Number(input) === 0) {
+        this.result = 0;
+      } else {
+        // eslint-disable-next-line no-eval
+        this.result = eval(input);
+      }
       this.sharedService.saveHistory(this.input, this.result.toString());
       if ([520].includes(this.result)) {
         this.deviceAccounts.get().then(async accounts => {

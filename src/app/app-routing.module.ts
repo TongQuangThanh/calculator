@@ -1,3 +1,4 @@
+import { ConvertComponent } from './convert/convert.component';
 import { PrivacyComponent } from './privacy/privacy.component';
 import { AboutComponent } from './about/about.component';
 import { HistoryComponent } from './history/history.component';
@@ -8,6 +9,10 @@ const routes: Routes = [
   {
     path: 'calculator/:id',
     loadChildren: () => import('./calculator/calculator.module').then( m => m.CalculatorPageModule)
+  },
+  {
+    path: 'convert/:id',
+    component: ConvertComponent
   },
   {
     path: 'history',
