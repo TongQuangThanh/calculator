@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
-import { AfterViewChecked, Component, Input, OnInit } from '@angular/core';
+import { AfterViewChecked, Component, HostListener, Input, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { App } from '@capacitor/app';
 import { DeviceAccounts } from '@ionic-native/device-accounts/ngx';
@@ -63,6 +63,11 @@ export class CalculatorPage implements OnInit, AfterViewChecked {
     this.clientHeight = document.defaultView.innerHeight;
     this.platform.backButton.subscribeWithPriority(-1, () => this.exitApp());
     sharedService.exit$.subscribe(() => this.exitApp());
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.ngAfterViewChecked();
   }
 
   ngOnInit() {
