@@ -4,15 +4,31 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>History</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="clear()">
+        <ion-icon name="trash" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true" *ngIf="history.length !== 0;else noHistory">
+  <ion-item class="ion-margin-horizontal ion-margin-vertical">
+    <ion-text>Nhấn vào phép tính hoặc kết quả để copy vào clipboard</ion-text>
+  </ion-item>
   <ion-card *ngFor="let item of history">
-    <ion-card-header class="ion-text-right">
-      <ion-card-subtitle style="font-size: 16px;">{{item.input}}</ion-card-subtitle>
-      <ion-card-title>{{item.result}}</ion-card-title>
-    </ion-card-header>
+    <ion-item style="display: flex;">
+      <ion-thumbnail slot="start" style="display: flex; flex-direction: column; justify-content: center; margin-left: 8px;">
+        <fa-icon [icon]="item.type.icon" size="lg" class="ion-text-center"></fa-icon>
+        <ion-text class="ion-text-center" style="margin-top: 8px;">{{ item.type.title }}</ion-text>
+      </ion-thumbnail>
+      <ion-card-header class="ion-text-right ion-no-padding ion-padding-vertical" style="flex-grow: 1;">
+        <ion-card-subtitle style="font-size: 16px;" (click)="copy(item.result)">
+          {{item.input}} {{ item.from ? '(' + item.from + ')' : '' }}
+        </ion-card-subtitle>
+        <ion-card-title (click)="copy(item.result)">{{item.result}} {{ item.to ? '(' + item.to + ')' : '' }}</ion-card-title>
+      </ion-card-header>
+    </ion-item>
   </ion-card>
 </ion-content>
 <ng-template #noHistory>

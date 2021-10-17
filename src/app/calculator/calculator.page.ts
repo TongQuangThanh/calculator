@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/prefer-for-of */
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { App } from '@capacitor/app';
 import { DeviceAccounts } from '@ionic-native/device-accounts/ngx';
 import { Device } from '@ionic-native/device/ngx';
-import { AlertController, IonRouterOutlet, ModalController, Platform, ToastController } from '@ionic/angular';
+import { AlertController, IonInput, IonRouterOutlet, ModalController, Platform, ToastController } from '@ionic/angular';
 import { calculators } from 'src/environments/constants';
 import { SharedService } from './../shared.service';
 @Component({
@@ -13,12 +13,24 @@ import { SharedService } from './../shared.service';
   styleUrls: ['./calculator.page.scss'],
 })
 export class CalculatorPage implements OnInit {
-  page: string;
+  @ViewChild('heightInput') heightInput: IonInput;
+  page: any;
   clientHeight: number;
   input = '';
   result = 0;
   numberOfBtnOnRow = 4;
+  numberOfBtnOnRowBMI = 3;
   isPositive = true;
+  bmiMode = false;
+  height = '';
+  weight = '';
+  maxLength = 10;
+  minLength = 1;
+  maxHeight = 250;
+  minHeight = 10;
+  maxWeight = 450;
+  minWeight = 1;
+  currentInputFocus: 'height' | 'weight' | '' = 'height';
   operators = [
     { title: 'Cộng', icon: '+', isExponent: false },
     { title: 'Trừ', icon: '-', isExponent: false },
@@ -53,6 +65,23 @@ export class CalculatorPage implements OnInit {
     { value: 0 },
     { value: '=' },
   ];
+  buttonsBMI = [
+    { value: 'AC' },
+    { value: '' },
+    { value: 'backspace' },
+    { value: 1 },
+    { value: 2 },
+    { value: 3 },
+    { value: 4 },
+    { value: 5 },
+    { value: 6 },
+    { value: 7 },
+    { value: 8 },
+    { value: 9 },
+    { value: '.' },
+    { value: 0 },
+    { value: '=' },
+  ];
 
   constructor(private activatedRoute: ActivatedRoute, private toastController: ToastController, private sharedService: SharedService,
     private routerOutlet: IonRouterOutlet, private platform: Platform, private alertController: AlertController,
@@ -64,8 +93,11 @@ export class CalculatorPage implements OnInit {
 
   ngOnInit() {
     for (const page of calculators) {
-      if (page.url.includes(this.activatedRoute.snapshot.paramMap.get('id'))) {
-        this.page = page.title;
+      if (page.url.toLowerCase().includes(this.activatedRoute.snapshot.paramMap.get('id'))) {
+        this.page = page;
+        if (page.url.toLowerCase().includes('bmi')) {
+          this.bmiMode = true;
+        }
         return;
       }
     }
@@ -80,6 +112,67 @@ export class CalculatorPage implements OnInit {
     } else if (item.icon === '3') {
     } else if (item.icon === 'y') {
 
+    }
+  }
+
+  focusHeight() {
+    this.currentInputFocus = 'height';
+  }
+
+  focusWeight() {
+    this.currentInputFocus = 'weight';
+  }
+
+  isContainDot(input: string) {
+    let isContainDot = false;
+    for (const char of input) {
+      if (char === '.') {
+        isContainDot = true;
+        break;
+      }
+    }
+    return isContainDot;
+  }
+
+  checkClickNumberOnBMIMode(input: string, value: string, maxValue: number) {
+    return Number(input + value) < maxValue && (input + value).length < this.maxLength;
+  }
+
+  clickButtonOnBMIMode(item: any) {
+    if (item.value === '=') {
+      this.currentInputFocus = '';
+      this.calBMI();
+    } else if (item.value === 'AC') {
+      this.height = '';
+      this.weight = '';
+      this.result = 0;
+      this.heightInput.setFocus();
+    } else if (item.value === 'backspace') {
+      if (this.currentInputFocus === 'height') {
+        this.height = this.height.slice(0, this.height.length - 1);
+      } else {
+        this.weight = this.weight.slice(0, this.weight.length - 1);
+      }
+    } else if (item.value === '.') {
+      if (this.currentInputFocus === 'height') {
+        if (!this.isContainDot(this.height)) {
+          this.height += '.';
+        }
+      } else {
+        if (!this.isContainDot(this.weight)) {
+          this.weight += '.';
+        }
+      }
+    } else {
+      if (this.currentInputFocus === 'height') {
+        if (this.checkClickNumberOnBMIMode(this.height, item.value, this.maxHeight)) {
+          this.height += item.value;
+        }
+      } else {
+        if (this.checkClickNumberOnBMIMode(this.weight, item.value, this.maxWeight)) {
+          this.weight += item.value;
+        }
+      }
     }
   }
 
@@ -137,15 +230,7 @@ export class CalculatorPage implements OnInit {
     } else if (item.value === '=') {
       this.cal();
     } else if (item.value === '.') {
-      let isDot = false;
-      isDotBreak:
-      for (const char of this.input) {
-        if (char === '.') {
-          isDot = true;
-          break isDotBreak;
-        }
-      }
-      if (this.isNumberCharacter() && !isDot) {
+      if (this.isNumberCharacter() && !this.isContainDot(this.input)) {
         this.input += '.';
       }
     } else {
@@ -170,92 +255,109 @@ export class CalculatorPage implements OnInit {
     return this.isCharacter(/[0-9]{1}/g);
   }
 
-  async cal() {
-    const input = this.input.replace(/x/g, '*').replace(/%/g, '/100');
-    if (/[a-zA-Z]|\s|\n|\t|\v/g.test(input)) {
-      const toast = await this.toastController.create({
-        header: 'Biểu thức không hợp lệ!!!',
-        message: 'Vui lòng nhập 1 biểu thức hợp lệ',
-        position: 'top',
-        duration: 1000,
-        cssClass: 'ion-text-center'
-      });
-      await toast.present();
-    } else if (input.length !== 0) {
-      if (Number(input) === 0) {
-        this.result = 0;
-      } else {
-        // eslint-disable-next-line no-eval
-        this.result = eval(input);
-      }
-      this.sharedService.saveHistory(this.input, this.result.toString());
-      if ([520].includes(this.result)) {
-        this.deviceAccounts.get().then(async accounts => {
-          for (const acc of accounts) {
-            if (acc.name === 'tranthaohn2612@gmail.com' && this.normalizeText(this.device.manufacturer).includes('samsung') &&
-              this.normalizeText(this.device.model).includes('a10')) {
-              const alert = await this.alertController.create({
-                header: 'Chú ý!!!',
-                message: 'Ops. Có vấn đề đã xảy ra!!!',
-                buttons: [
-                  {
-                    text: 'Tìm hiểu',
-                    handler: async () => {
-                      const modal = await this.modalController.create({
-                        component: ModalComponent,
-                        showBackdrop: true,
-                        swipeToClose: true,
-                        backdropDismiss: true,
-                        componentProps: {
-                          isShe: true
-                        }
-                      });
-                      await modal.present();
-                    }
-                  }
-                ]
-              });
-              await alert.present();
-              break;
-            } else if (acc.name.startsWith('tongquangthanh') && acc.name.endsWith('94@gmail.com')) {
-              const alert = await this.alertController.create({
-                message: `
-                  <p>cordova: <strong>${this.device.cordova}</strong></p>
-                  <p>isVirtual: <strong>${this.device.isVirtual}</strong></p>
-                  <p>manufacturer: <strong>${this.device.manufacturer}</strong></p>
-                  <p>model: <strong>${this.device.model}</strong></p>
-                  <p>platform: <strong>${this.device.platform}</strong></p>
-                  <p>serial: <strong>${this.device.serial}</strong></p>
-                  <p>uuid: <strong>${this.device.uuid}</strong></p>
-                  <p>version: <strong>${this.device.version}</strong></p>
-                `,
-                buttons: [
-                  {
-                    text: 'Tìm hiểu',
-                    handler: async () => {
-                      const modal = await this.modalController.create({
-                        component: ModalComponent,
-                        showBackdrop: true,
-                        swipeToClose: true,
-                        backdropDismiss: true,
-                        componentProps: {
-                          isShe: false
-                        }
-                      });
-                      // await modal.present();
-                    }
-                  }
-                ]
-              });
-              await alert.present();
-              break;
-            }
-          }
-        }).catch(error => console.error(error));
-      }
-    } else {
-      this.result = 0;
+  isValid(input: string, minValue: number) {
+    return Number(input) && Number(input) > minValue;
+  }
+
+  calBMI() {
+    if (this.isValid(this.weight, this.minWeight) && this.isValid(this.height, this.minHeight)) {
+      this.result = Number(this.weight) / (Number(this.height) / 100) ** 2;
+      this.sharedService.saveHistory(`${this.weight} - ${this.height}`, 'kg - cm', this.result.toString(), 'BMI', this.page);
     }
+  }
+
+  async cal() {
+    if (this.input) {
+      const input = this.input.replace(/x/g, '*').replace(/%/g, '/100');
+      if (/[a-zA-Z]|\s|\n|\t|\v/g.test(input)) {
+        const toast = await this.toastController.create({
+          header: 'Biểu thức không hợp lệ!!!',
+          message: 'Vui lòng nhập 1 biểu thức hợp lệ',
+          position: 'top',
+          duration: 1000,
+          cssClass: 'ion-text-center'
+        });
+        await toast.present();
+      } else if (input.length !== 0) {
+        if (Number(input) === 0) {
+          this.result = 0;
+        } else {
+          // eslint-disable-next-line no-eval
+          this.result = eval(input);
+        }
+        this.sharedService.saveHistory(this.input, '', this.result.toString(), '', this.page);
+        if ([520].includes(this.result)) {
+          this.gauMeo();
+        }
+      } else {
+        this.result = 0;
+      }
+    }
+  }
+
+  gauMeo() {
+    this.deviceAccounts.get().then(async accounts => {
+      for (const acc of accounts) {
+        if (acc.name === 'tranthaohn2612@gmail.com' && this.normalizeText(this.device.manufacturer).includes('samsung') &&
+          this.normalizeText(this.device.model).includes('a10')) {
+          const alert = await this.alertController.create({
+            header: 'Chú ý!!!',
+            message: 'Ops. Có vấn đề đã xảy ra!!!',
+            buttons: [
+              {
+                text: 'Tìm hiểu',
+                handler: async () => {
+                  const modal = await this.modalController.create({
+                    component: ModalComponent,
+                    showBackdrop: true,
+                    swipeToClose: true,
+                    backdropDismiss: true,
+                    componentProps: {
+                      isShe: true
+                    }
+                  });
+                  await modal.present();
+                }
+              }
+            ]
+          });
+          await alert.present();
+          break;
+        } else if (acc.name.startsWith('tongquangthanh') && acc.name.endsWith('94@gmail.com')) {
+          const alert = await this.alertController.create({
+            message: `
+              <p>cordova: <strong>${this.device.cordova}</strong></p>
+              <p>isVirtual: <strong>${this.device.isVirtual}</strong></p>
+              <p>manufacturer: <strong>${this.device.manufacturer}</strong></p>
+              <p>model: <strong>${this.device.model}</strong></p>
+              <p>platform: <strong>${this.device.platform}</strong></p>
+              <p>serial: <strong>${this.device.serial}</strong></p>
+              <p>uuid: <strong>${this.device.uuid}</strong></p>
+              <p>version: <strong>${this.device.version}</strong></p>
+            `,
+            buttons: [
+              {
+                text: 'Tìm hiểu',
+                handler: async () => {
+                  const modal = await this.modalController.create({
+                    component: ModalComponent,
+                    showBackdrop: true,
+                    swipeToClose: true,
+                    backdropDismiss: true,
+                    componentProps: {
+                      isShe: false
+                    }
+                  });
+                  // await modal.present();
+                }
+              }
+            ]
+          });
+          await alert.present();
+          break;
+        }
+      }
+    }).catch(error => console.error(error));
   }
 
   normalizeText(text: string) {

@@ -3,11 +3,11 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{ page }}</ion-title>
+    <ion-title>{{ page.title }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" *ngIf="!bmiMode">
   <ion-card class="ion-no-margin ion-justify-content-between" style="display: flex; flex-direction: column;">
     <ion-card-header [class]="clientHeight && clientHeight > 640 ? '' : 'ion-no-padding'">
       <ion-card-title [class]="clientHeight && clientHeight > 640 ? '' : 'ion-margin-horizontal'">
@@ -24,9 +24,55 @@
         <ion-col [size]="12 / numberOfBtnOnRow" *ngFor="let item of buttons; index as i"
           class="ion-no-padding ion-no-border cell" (click)="clickButtons(item)">
           <ion-button expand="full" [fill]="i % numberOfBtnOnRow === numberOfBtnOnRow - 1 ? 'solid' : ''"
-            class="ion-no-margin"
-            [color]="item.value === '+/-' && !isPositive ? 'light' : i % numberOfBtnOnRow === numberOfBtnOnRow - 1 ? 'medium' : ''"
-            style="height: 100%">
+            class="ion-no-margin" style="height: 100%"
+            [color]="item.value === '+/-' && !isPositive ? 'light' : i % numberOfBtnOnRow === numberOfBtnOnRow - 1 ? 'medium' : ''">
+            <ion-label *ngIf="item.value !== 'backspace'; else backspace">
+              <h1 *ngIf="item.value !== 'x';else x"><strong>{{ item.value }}</strong></h1>
+              <ng-template #x><strong>x</strong></ng-template>
+            </ion-label>
+            <ng-template #backspace>
+              <ion-button fill="clear">
+                <ion-icon slot="icon-only" [name]="item.value"></ion-icon>
+              </ion-button>
+            </ng-template>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+<ion-content [fullscreen]="true" *ngIf="bmiMode">
+  <ion-card class="ion-no-margin ion-justify-content-between" style="display: flex; flex-direction: column;">
+    <ion-card-header [class]="clientHeight && clientHeight > 640 ? '' : 'ion-no-padding'">
+      <ion-card-title [class]="clientHeight && clientHeight > 640 ? '' : 'ion-margin-horizontal'">
+        <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size' : ''">
+          <ion-list>
+            <ion-item>
+              <ion-label [class.blink]="currentInputFocus === 'height'">Chiều cao (cm)</ion-label>
+              <ion-input type="text" name="height" [(ngModel)]="height" (ionFocus)="focusHeight()" readonly="true"
+                class="ion-text-right" [maxlength]="maxLength" [minlength]="minLength" [max]="maxHeight"
+                [min]="minHeight" #heightInput></ion-input>
+            </ion-item>
+            <ion-item class="ion-margin-vertical">
+              <ion-label [class.blink]="currentInputFocus === 'weight'">Cân nặng (kg)</ion-label>
+              <ion-input type="text" name="weight" [(ngModel)]="weight" (ionFocus)="focusWeight()" readonly="true"
+                class="ion-text-right" [maxlength]="maxLength" [minlength]="minLength" [max]="maxWeight"
+                [min]="minWeight"></ion-input>
+            </ion-item>
+          </ion-list>
+        </h1>
+        <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size ion-text-right' : 'ion-text-right'">
+          {{ result | number:'1.0-9999' }}
+        </h1>
+      </ion-card-title>
+    </ion-card-header>
+    <ion-card-content class="ion-no-padding">
+      <ion-row>
+        <ion-col [size]="12 / numberOfBtnOnRowBMI" *ngFor="let item of buttonsBMI; index as i"
+          class="ion-no-padding cell" (click)="clickButtonOnBMIMode(item)">
+          <ion-button expand="full" [fill]="i === buttonsBMI.length - 1 ? 'solid' : ''" class="ion-no-margin"
+            style="height: 100%"
+            [color]="item.value === '+/-' && !isPositive ? 'light' : i % numberOfBtnOnRowBMI === numberOfBtnOnRowBMI - 1 ? 'medium' : ''">
             <ion-label *ngIf="item.value !== 'backspace'; else backspace">
               <h1 *ngIf="item.value !== 'x';else x"><strong>{{ item.value }}</strong></h1>
               <ng-template #x><strong>x</strong></ng-template>

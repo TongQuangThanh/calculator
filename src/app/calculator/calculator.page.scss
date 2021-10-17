@@ -14,3 +14,16 @@ ion-col {
   border-top: 1px solid var(--ion-color-light-shade);
   border-right: 1px solid var(--ion-color-light-shade);
 }
+
+.ion-valid {
+  --highlight-background: 0px;
+}
+
+.blink {
+  animation: blinker 0.8s linear infinite;
+}
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

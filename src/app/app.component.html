@@ -2,11 +2,11 @@
   <ion-split-pane contentId="main-content">
     <ion-menu contentId="main-content" type="overlay">
       <ion-content>
-        <ion-list>
+        <ion-list class="ion-padding-horizontal">
           <ion-list-header [class]="isShe ? 'padding-left-12' : 'ion-margin-vertical padding-left-12'">
             <h1>Máy tính</h1>
           </ion-list-header>
-          <ion-note class="ion-margin-vertical padding-left-12" *ngIf="isShe; else noName" (click)="clickName()">
+          <ion-note class="ion-margin-vertical" *ngIf="isShe; else noName" (click)="clickName()">
             Chúc gấu yêu ngày mới tốt lành nhé <ion-icon name="heart" color="danger"></ion-icon>
           </ion-note>
           <ng-template #noName>

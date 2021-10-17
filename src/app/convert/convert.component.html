@@ -17,15 +17,15 @@
         <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size' : ''">
           <ion-input type="text" [(ngModel)]="input" autofocus="true" readonly="true"></ion-input>
         </h1>
-        <ion-select interface="action-sheet" name="from" [(ngModel)]="fromValue">
+        <ion-select interface="action-sheet" name="from" [(ngModel)]="fromValue" (ionChange)="cal()">
           <ion-select-option [value]="item" *ngFor="let item of list">
             {{ item.currencyName ? item.currencyName : item.name }} {{ item.currencySymbol ? '(' + item.currencySymbol + ')' : '' }}
           </ion-select-option>
         </ion-select>
         <h1 [class]="clientHeight && clientHeight > 640 ? 'big-size ion-text-right' : 'ion-text-right'">
-          {{ result | number:'1.0-9999' }}
+          {{ result | number:digitsInfo() }}
         </h1>
-        <ion-select interface="action-sheet" name="to" [(ngModel)]="toValue">
+        <ion-select interface="action-sheet" name="to" [(ngModel)]="toValue" (ionChange)="cal()">
           <ion-select-option [value]="item" *ngFor="let item of list">
             {{ item.currencyName ? item.currencyName : item.name }} {{ item.currencySymbol ? '(' + item.currencySymbol + ')' : '' }}
           </ion-select-option>

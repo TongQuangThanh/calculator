@@ -2,12 +2,8 @@
   white-space: nowrap;
 }
 
-ion-item::part(native) {
+::ng-deep ion-item::part(native) {
   padding: 0px!important;
-}
-
-.padding-left-12 {
-  padding-left: 12px;
 }
 
 .no-bottom-border {

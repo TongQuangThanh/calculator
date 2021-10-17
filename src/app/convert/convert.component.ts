@@ -24,7 +24,6 @@ export class ConvertComponent implements OnInit {
   faSync = faSync;
   buttons = [
     { value: 'AC' },
-    // { value: '%', isOperator: true },
     { value: '+/-' },
     { value: 'backspace' },
     { value: 1 },
@@ -76,7 +75,7 @@ export class ConvertComponent implements OnInit {
         } else {
           this.list = page.data;
           this.fromValue = this.list[0];
-          this.toValue = this.list[0];
+          this.toValue = this.list[1];
         }
         return;
       }
@@ -181,39 +180,44 @@ export class ConvertComponent implements OnInit {
   }
 
   async cal() {
-    let input = this.input.replace(/x/g, '*').replace(/%/g, '/100');
-    if (/[a-zA-Z]|\s|\n|\t|\v/g.test(input)) {
-      const toast = await this.toastController.create({
-        header: 'Biểu thức không hợp lệ!!!',
-        message: 'Vui lòng nhập 1 biểu thức hợp lệ',
-        position: 'top',
-        duration: 1000,
-        cssClass: 'ion-text-center'
-      });
-      await toast.present();
-    } else if (input.length !== 0 || !isNaN(Number(input))) {
-      if (Number(input) === 0) {
-        this.result = 0;
+    if (this.input) {
+      let input = this.input.replace(/x/g, '*').replace(/%/g, '/100');
+      if (/[a-zA-Z]|\s|\n|\t|\v/g.test(input)) {
+        const toast = await this.toastController.create({
+          header: 'Biểu thức không hợp lệ!!!',
+          message: 'Vui lòng nhập 1 biểu thức hợp lệ',
+          position: 'top',
+          duration: 1000,
+          cssClass: 'ion-text-center'
+        });
+        await toast.present();
+      } else if (input.length !== 0 || !isNaN(Number(input))) {
+        if (Number(input) === 0) {
+          this.result = 0;
+        } else {
+          // eslint-disable-next-line no-eval
+          input = eval(input);
+        }
+        if (this.page.url.includes('temperature')) {
+          this.calculateTemperature(Number(input));
+        } else if (this.page.url.includes('currency')) {
+          this.calculateCurrency(Number(input));
+        } else {
+          this.converts(Number(input));
+        }
       } else {
-        // eslint-disable-next-line no-eval
-        input = eval(input);
+        this.result = 0;
       }
-      if (this.page.url.includes('temperature')) {
-        this.calculateTemperature(Number(input));
-      } else if (this.page.url.includes('currency')) {
-        this.calculateCurrency(Number(input));
-      } else if (this.page.url.includes('time')) {
-        this.calculateTime(Number(input));
-      }
-      this.sharedService.saveHistory(this.input, this.result.toString());
-    } else {
-      this.result = 0;
     }
   }
 
-  calculateTime(input: number) {
-    console.log(this.fromValue);
-    console.log(this.toValue);
+  digitsInfo() {
+    return `1.0-${document.body.clientWidth < 300 ? '10' : document.body.clientWidth < 500 ? '16' : '20'}`;
+  }
+
+  converts(input: number) {
+    this.result = this.fromValue.rate * input / this.toValue.rate;
+    this.sharedService.saveHistory(this.input, this.fromValue.name, this.result.toString(), this.toValue.name, this.page);
   }
 
   calculateTemperature(input: number) {
@@ -242,12 +246,14 @@ export class ConvertComponent implements OnInit {
         this.result = input;
       }
     }
+    this.sharedService.saveHistory(this.input, this.fromValue.name, this.result.toString(), this.toValue.name, this.page);
   }
 
   calculateCurrency(input: number) {
     const q = `${this.fromValue.id}_${this.toValue.id}`;
     this.sharedService.getConvert(q).subscribe((data: any) => {
       this.result = input * data.results[q].val;
+      this.sharedService.saveHistory(this.input, this.fromValue.id, this.result.toString(), this.toValue.id, this.page);
     });
   }
 }

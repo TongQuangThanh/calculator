@@ -15,13 +15,14 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HistoryComponent } from './history/history.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 
 @NgModule({
   declarations: [AppComponent, HistoryComponent, AboutComponent, PrivacyComponent, ConvertComponent],
   entryComponents: [],
   imports: [BrowserModule, FormsModule, IonicModule.forRoot(),
     AppRoutingModule, IonicStorageModule.forRoot(), HttpClientModule, FontAwesomeModule],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Device, DeviceAccounts],
+  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }, Device, DeviceAccounts, Clipboard],
   bootstrap: [AppComponent],
 })
 export class AppModule { }
